@@ -3,12 +3,12 @@ import 'package:video_player/video_player.dart';
 //import 'package:chewie/chewie.dart';
 
 class VideoListItem extends StatefulWidget {
-  final VideoPlayerController videoPlayerController;
-  final bool looping;
+  final String url;
+  final bool inView;
 
   VideoListItem({
-    @required this.videoPlayerController,
-    this.looping,
+    @required this.url,
+    @required this.inView,
     Key key,
   }) : super(key: key);
   @override
@@ -23,31 +23,36 @@ class _VideoListItemState extends State<VideoListItem> {
   @override
   void initState() {
     super.initState();
-    _controller = widget.videoPlayerController;
-    _controller.setLooping(widget.looping);
-    _initVideoPlayerFuture = _controller.initialize();
-    // _chewieController = ChewieController(
-    //   videoPlayerController: widget.videoPlayerController,
-    //   //: widget.videoPlayerController.value.aspectRatio,
-    //   aspectRatio: 4 / 3,
-    //   customControls: ,
-    //   autoInitialize: true,
-    //   looping: widget.looping,
-    //   errorBuilder: (context, errorMessage) {
-    //     return Center(
-    //       child: Text(
-    //         errorMessage,
-    //         style: TextStyle(color: Colors.white),
-    //       ),
-    //     );
-    //   },
-    // );
+    _controller = VideoPlayerController.network(widget.url);
+    //_controller.setLooping(widget.looping);
+    _controller.setVolume(1.0);
+    _initVideoPlayerFuture = _controller.initialize().then((_) {
+      setState(() {});
+    });
+
+    if (widget.inView) {
+      _controller.play();
+      _controller.setLooping(true);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant VideoListItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.inView != widget.inView) {
+      if (widget.inView) {
+        _controller.play();
+        _controller.setLooping(true);
+      } else {
+        _controller.pause();
+      }
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.videoPlayerController.dispose();
+    _controller.dispose();
     //_chewieController.dispose();
   }
 
@@ -56,7 +61,7 @@ class _VideoListItemState extends State<VideoListItem> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
-        color: Colors.black54,
+        color: Theme.of(context).primaryColor,
         elevation: 8,
         child: Column(
           children: [
@@ -80,24 +85,38 @@ class _VideoListItemState extends State<VideoListItem> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                    icon: Icon(
-                      _controller.value.isPlaying
-                          ? Icons.pause
-                          : Icons.play_arrow,
-                      size: 30,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        if (_controller.value.isPlaying) {
-                          _controller.pause();
-                        } else {
-                          _controller.play();
-                        }
-                      });
-                    }),
-                Icon(
-                  Icons.volume_mute,
-                  size: 30,
+                  icon: Icon(
+                    _controller.value.isPlaying
+                        ? Icons.pause
+                        : Icons.play_arrow,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      if (_controller.value.isPlaying) {
+                        _controller.pause();
+                      } else {
+                        _controller.play();
+                      }
+                    });
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    _controller.value.volume == 0.0
+                        ? Icons.volume_up
+                        : Icons.volume_off,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      if (_controller.value.volume == 0.0) {
+                        _controller.setVolume(1.0);
+                      } else {
+                        _controller.setVolume(0.0);
+                      }
+                    });
+                  },
                 ),
               ],
             ),
