@@ -104,8 +104,8 @@ class _VideoListItemState extends State<VideoListItem> {
                 IconButton(
                   icon: Icon(
                     _controller.value.volume == 0.0
-                        ? Icons.volume_up
-                        : Icons.volume_off,
+                        ? Icons.volume_off
+                        : Icons.volume_up,
                     size: 30,
                   ),
                   onPressed: () {

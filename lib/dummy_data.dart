@@ -1,18 +1,18 @@
 const List<Map> DUMMY_DATA = [
   {
-    'name': 'video1',
+    'id': 'video1',
     'url':
         'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     'looping': true,
   },
   {
-    'name': 'video2',
+    'id': 'video2',
     'url':
         'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     'looping': false,
   },
   {
-    'name': 'video3',
+    'id': 'video3',
     'url':
         'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     'looping': true,
