@@ -1,11 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+//import 'package:video_player/video_player.dart';
 //import 'package:chewie/chewie.dart';
 import 'package:video_scroll/widgets/video_list_item.dart';
-import 'package:video_scroll/dummy_data.dart';
+//import 'package:video_scroll/dummy_data.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 
-class VideoListScreen extends StatelessWidget {
+import '../redux/store.dart';
+import '../redux/actions.dart';
+
+class VideoListScreen extends StatefulWidget {
+  @override
+  _VideoListScreenState createState() => _VideoListScreenState();
+}
+
+class _VideoListScreenState extends State<VideoListScreen> {
+  ScrollController _scrollController = new ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        final store = StoreProvider.of<AppState>(context);
+        print('page = ${store.state.pageNumber} #######');
+        store.dispatch(FetchVideos(pageNumber: store.state.pageNumber));
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,21 +44,25 @@ class VideoListScreen extends StatelessWidget {
       ),
       body: Container(
         //color: Colors.black87,
-        child: InViewNotifierList(
-          isInViewPortCondition:
-              (double deltaTop, double deltaBottom, double vpHeight) {
-            return deltaTop < (0.5 * vpHeight) &&
-                deltaBottom > (0.5 * vpHeight);
-          },
-          itemCount: DUMMY_DATA.length,
-          builder: (BuildContext ctx, int index) => InViewNotifierWidget(
-            id: '$index',
-            builder: (BuildContext ctx, bool isInView, Widget child) {
-              return VideoListItem(
-                url: DUMMY_DATA[index]['url'],
-                inView: isInView,
-              );
+        child: StoreConnector<AppState, AppState>(
+          converter: (store) => store.state,
+          builder: (context, state) => InViewNotifierList(
+            controller: _scrollController,
+            isInViewPortCondition:
+                (double deltaTop, double deltaBottom, double vpHeight) {
+              return deltaTop < (0.50 * vpHeight) &&
+                  deltaBottom > (0.50 * vpHeight);
             },
+            itemCount: state.videos.length,
+            builder: (BuildContext ctx, int index) => InViewNotifierWidget(
+              id: state.videos[index].id,
+              builder: (BuildContext ctx, bool isInView, Widget child) {
+                return VideoListItem(
+                  url: state.videos[index].url,
+                  inView: isInView,
+                );
+              },
+            ),
           ),
         ),
       ),

@@ -6,6 +6,7 @@ class AppState {
   bool isFetching;
   Exception error;
   int pageNumber;
+  int lastPage;
   bool isSoundOn;
 
   AppState({

@@ -26,9 +26,7 @@ class _VideoListItemState extends State<VideoListItem> {
     _controller = VideoPlayerController.network(widget.url);
     //_controller.setLooping(widget.looping);
     _controller.setVolume(1.0);
-    _initVideoPlayerFuture = _controller.initialize().then((_) {
-      setState(() {});
-    });
+    _initVideoPlayerFuture = _controller.initialize();
 
     if (widget.inView) {
       _controller.play();
@@ -75,8 +73,11 @@ class _VideoListItemState extends State<VideoListItem> {
                     child: VideoPlayer(_controller),
                   );
                 } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  return AspectRatio(
+                    aspectRatio: 4 / 3,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 }
               },

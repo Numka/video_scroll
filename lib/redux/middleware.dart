@@ -21,15 +21,19 @@ void fetchVideosMiddleware(
   NextDispatcher next,
 ) async {
   if (action is FetchVideos) {
+    print('page = ${action.pageNumber} #######');
     var url =
         'https://my-json-server.typicode.com/Numka/video_list/pages/${action.pageNumber}';
     try {
-      //print('get to: $url');
       final response = await http.get(url);
-      //print(json.decode(response.body));
 
       var extractedVideos = json.decode(response.body);
-      print(extractedVideos);
+      final List<VideoItem> videoList = store.state.videos;
+      for (var exvideo in extractedVideos['videos']) {
+        videoList
+            .add(VideoItem(id: exvideo['id'].toString(), url: exvideo['url']));
+      }
+      store.dispatch(FetchVideosSucceded(fetchedVideos: videoList));
     } catch (error) {
       throw error;
     }
