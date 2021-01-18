@@ -15,6 +15,7 @@ class AppState {
     @required this.error,
     @required this.pageNumber,
     @required this.isSoundOn,
+    @required this.lastPage,
   });
 
   AppState copyWith({
@@ -23,6 +24,7 @@ class AppState {
     bool isFetching,
     Exception error,
     int pageNumber,
+    int lastPage,
     bool isSoundOn,
   }) {
     return AppState(
@@ -31,6 +33,7 @@ class AppState {
       error: error ?? this.error,
       pageNumber: pageNumber ?? this.pageNumber,
       isSoundOn: isSoundOn ?? this.isSoundOn,
+      lastPage: lastPage ?? this.lastPage,
     );
   }
 
@@ -39,6 +42,7 @@ class AppState {
     this.isFetching = false;
     this.error = null;
     this.pageNumber = 1;
+    this.lastPage = null;
     this.isSoundOn = true;
   }
 }

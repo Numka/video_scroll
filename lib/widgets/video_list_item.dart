@@ -76,7 +76,9 @@ class _VideoListItemState extends State<VideoListItem> {
                   return AspectRatio(
                     aspectRatio: 4 / 3,
                     child: Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.black,
+                      ),
                     ),
                   );
                 }

@@ -11,6 +11,8 @@ class FetchVideos extends Action {
   });
 }
 
+class FetchingVideos extends Action {}
+
 class FetchVideosSucceded extends Action {
   final List<VideoItem> fetchedVideos;
 
@@ -24,5 +26,13 @@ class FetchVideosFailed extends Action {
 
   FetchVideosFailed({
     @required this.error,
+  });
+}
+
+class FetchLastPageSucceded extends Action {
+  final int lastPage;
+
+  FetchLastPageSucceded({
+    @required this.lastPage,
   });
 }

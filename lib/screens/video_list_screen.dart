@@ -21,11 +21,13 @@ class _VideoListScreenState extends State<VideoListScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(() {
+      final store = StoreProvider.of<AppState>(context);
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        final store = StoreProvider.of<AppState>(context);
         print('page = ${store.state.pageNumber} #######');
-        store.dispatch(FetchVideos(pageNumber: store.state.pageNumber));
+        if (store.state.pageNumber <= store.state.lastPage) {
+          store.dispatch(FetchVideos(pageNumber: store.state.pageNumber));
+        }
       }
     });
   }
@@ -46,23 +48,37 @@ class _VideoListScreenState extends State<VideoListScreen> {
         //color: Colors.black87,
         child: StoreConnector<AppState, AppState>(
           converter: (store) => store.state,
-          builder: (context, state) => InViewNotifierList(
-            controller: _scrollController,
-            isInViewPortCondition:
-                (double deltaTop, double deltaBottom, double vpHeight) {
-              return deltaTop < (0.50 * vpHeight) &&
-                  deltaBottom > (0.50 * vpHeight);
-            },
-            itemCount: state.videos.length,
-            builder: (BuildContext ctx, int index) => InViewNotifierWidget(
-              id: state.videos[index].id,
-              builder: (BuildContext ctx, bool isInView, Widget child) {
-                return VideoListItem(
-                  url: state.videos[index].url,
-                  inView: isInView,
-                );
-              },
-            ),
+          builder: (context, state) => Stack(
+            children: [
+              InViewNotifierList(
+                controller: _scrollController,
+                isInViewPortCondition:
+                    (double deltaTop, double deltaBottom, double vpHeight) {
+                  return deltaTop < (0.50 * vpHeight) &&
+                      deltaBottom > (0.50 * vpHeight);
+                },
+                itemCount: state.videos.length,
+                builder: (BuildContext ctx, int index) => InViewNotifierWidget(
+                  id: state.videos[index].id,
+                  builder: (BuildContext ctx, bool isInView, Widget child) {
+                    return VideoListItem(
+                      url: state.videos[index].url,
+                      inView: isInView,
+                    );
+                  },
+                ),
+              ),
+              state.isFetching
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.black,
+                      ),
+                    )
+                  : SizedBox(
+                      width: 0,
+                      height: 0,
+                    ),
+            ],
           ),
         ),
       ),
