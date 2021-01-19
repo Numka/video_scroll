@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 import 'package:video_player/video_player.dart';
-//import 'package:chewie/chewie.dart';
+
+import '../redux/actions.dart';
+import '../redux/store.dart';
 
 class VideoListItem extends StatefulWidget {
   final String url;
@@ -16,15 +20,14 @@ class VideoListItem extends StatefulWidget {
 }
 
 class _VideoListItemState extends State<VideoListItem> {
-  //ChewieController _chewieController;
   VideoPlayerController _controller;
   Future<void> _initVideoPlayerFuture;
+  Store<AppState> store;
 
   @override
   void initState() {
     super.initState();
     _controller = VideoPlayerController.network(widget.url);
-    //_controller.setLooping(widget.looping);
     _controller.setVolume(1.0);
     _initVideoPlayerFuture = _controller.initialize();
 
@@ -39,6 +42,8 @@ class _VideoListItemState extends State<VideoListItem> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.inView != widget.inView) {
       if (widget.inView) {
+        store = StoreProvider.of<AppState>(context);
+        _controller.setVolume(store.state.isSoundOn ? 1.0 : 0.0);
         _controller.play();
         _controller.setLooping(true);
       } else {
@@ -51,7 +56,6 @@ class _VideoListItemState extends State<VideoListItem> {
   void dispose() {
     super.dispose();
     _controller.dispose();
-    //_chewieController.dispose();
   }
 
   @override
@@ -68,7 +72,6 @@ class _VideoListItemState extends State<VideoListItem> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return AspectRatio(
-                    //aspectRatio: _controller.value.aspectRatio,
                     aspectRatio: 4 / 3,
                     child: VideoPlayer(_controller),
                   );
@@ -119,6 +122,7 @@ class _VideoListItemState extends State<VideoListItem> {
                         _controller.setVolume(0.0);
                       }
                     });
+                    store.dispatch(ToggleAudio());
                   },
                 ),
               ],

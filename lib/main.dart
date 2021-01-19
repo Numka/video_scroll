@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
-import 'package:video_scroll/redux/actions.dart';
-import 'package:video_scroll/redux/middleware.dart';
-import 'package:video_scroll/redux/reducers.dart';
-import 'package:video_scroll/redux/store.dart';
+import './redux/actions.dart';
+import './redux/middleware.dart';
+import './redux/reducers.dart';
+import './redux/store.dart';
+
 import './screens/video_list_screen.dart';
 
 void main() {
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    store.dispatch(FetchLastPage());
     store.dispatch(FetchVideos(pageNumber: store.state.pageNumber));
     return StoreProvider<AppState>(
       store: store,

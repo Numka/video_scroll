@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-//import 'package:video_player/video_player.dart';
-//import 'package:chewie/chewie.dart';
 import 'package:video_scroll/widgets/video_list_item.dart';
-//import 'package:video_scroll/dummy_data.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 
 import '../redux/store.dart';

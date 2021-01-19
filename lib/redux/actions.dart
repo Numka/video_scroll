@@ -29,6 +29,8 @@ class FetchVideosFailed extends Action {
   });
 }
 
+class FetchLastPage extends Action {}
+
 class FetchLastPageSucceded extends Action {
   final int lastPage;
 
@@ -36,3 +38,5 @@ class FetchLastPageSucceded extends Action {
     @required this.lastPage,
   });
 }
+
+class ToggleAudio extends Action {}

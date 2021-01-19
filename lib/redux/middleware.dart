@@ -20,24 +20,24 @@ void fetchVideosMiddleware(
   dynamic action,
   NextDispatcher next,
 ) async {
-  if (action is FetchVideos) {
-    // if (store.state.lastPage != null &&
-    //     store.state.lastPage == store.state.pageNumber + 1) {
-    //   return;
-    // }
-    print('page = ${action.pageNumber} #######');
-    var urlForVideos =
-        'https://my-json-server.typicode.com/Numka/video_list/pages/${action.pageNumber}';
+  if (action is FetchLastPage) {
     var urlForLastPage =
         'https://my-json-server.typicode.com/Numka/video_list/lastPage';
-
+    try {
+      final responseForLastPage = await http.get(urlForLastPage);
+      var extractedLastPage = json.decode(responseForLastPage.body);
+      store.dispatch(FetchLastPageSucceded(lastPage: extractedLastPage['at']));
+    } catch (error) {
+      throw error;
+    }
+  } else if (action is FetchVideos) {
+    var urlForVideos =
+        'https://my-json-server.typicode.com/Numka/video_list/pages/${action.pageNumber}';
     try {
       store.dispatch(FetchingVideos());
       final responseForVideos = await http.get(urlForVideos);
-      final responseForLastPage = await http.get(urlForLastPage);
 
       var extractedVideos = json.decode(responseForVideos.body);
-      var extractedLastPage = json.decode(responseForLastPage.body);
 
       final List<VideoItem> videoList = store.state.videos;
       for (var exvideo in extractedVideos['videos']) {
@@ -45,7 +45,6 @@ void fetchVideosMiddleware(
             .add(VideoItem(id: exvideo['id'].toString(), url: exvideo['url']));
       }
       store.dispatch(FetchVideosSucceded(fetchedVideos: videoList));
-      store.dispatch(FetchLastPageSucceded(lastPage: extractedLastPage['at']));
     } catch (error) {
       throw error;
     }
