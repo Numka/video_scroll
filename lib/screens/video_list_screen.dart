@@ -42,7 +42,6 @@ class _VideoListScreenState extends State<VideoListScreen> {
         title: Text('Video List Screen'),
       ),
       body: Container(
-        //color: Colors.black87,
         child: StoreConnector<AppState, AppState>(
           converter: (store) => store.state,
           builder: (context, state) => Stack(
@@ -82,14 +81,3 @@ class _VideoListScreenState extends State<VideoListScreen> {
     );
   }
 }
-
-// child: ListView.builder(
-//   itemCount: DUMMY_DATA.length,
-//   itemBuilder: (BuildContext ctx, int index) => VideoListItem(
-//     videoPlayerController: VideoPlayerController.network(
-//       DUMMY_DATA[index]['url'],
-//       //'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-//     ),
-//     looping: DUMMY_DATA[index]['looping'],
-//   ),
-// ),
